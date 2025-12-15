@@ -1,0 +1,84 @@
+<Window x:Class="DistributedSolver.Client.Windows.MatrixGeneratorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Генератор матриц"
+        Width="500"
+        MinHeight="450"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource UiSurfaceBrush}"
+        Foreground="{StaticResource UiTextPrimaryBrush}">
+
+    <Window.Resources>
+        <!-- Reuse styles from App.xaml if possible, but redefining here for safety as window resources -->
+        <Style TargetType="TextBox" BasedOn="{StaticResource UiTextBox}"/>
+        <Style TargetType="Button" BasedOn="{StaticResource UiButton}"/>
+    </Window.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Header -->
+            <RowDefinition Height="*"/>    <!-- Form -->
+            <RowDefinition Height="Auto"/> <!-- Footer -->
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,24">
+            <TextBlock Text="Генератор матриц" FontSize="18" FontWeight="Bold" Foreground="{StaticResource UiTextPrimaryBrush}"/>
+            <TextBlock Text="Настройте параметры для генерации системы" FontSize="12" Foreground="{StaticResource UiTextSecondaryBrush}" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <!-- Form Content -->
+        <Border Grid.Row="1" Background="{StaticResource UiSurfaceAltBrush}" BorderBrush="{StaticResource UiBorderBrush}" BorderThickness="1" Padding="20" VerticalAlignment="Top">
+            <StackPanel>
+                <!-- Matrix Size -->
+                <TextBlock Text="Размер матрицы" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Text="{Binding MatrixSize, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="1 — 50000" FontSize="11" Foreground="{StaticResource UiTextSecondaryBrush}" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                </Grid>
+
+                <!-- Matrix Type -->
+                <TextBlock Text="Тип матрицы" FontSize="12" FontWeight="SemiBold" Margin="0,16,0,8"/>
+                <ComboBox SelectedItem="{Binding MatrixType, Mode=TwoWay}"
+                          ItemsSource="{Binding MatrixTypes}"
+                          DisplayMemberPath="Name"
+                          Padding="8,6"
+                          Background="{StaticResource UiSurfaceBrush}"
+                          BorderBrush="{StaticResource UiBorderBrush}"/>
+
+                <!-- Range Controls (Conditional) -->
+                <StackPanel Visibility="{Binding ShowRangeControls}" Margin="0,16,0,0">
+                    <TextBlock Text="Диапазон значений" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <UniformGrid Columns="2">
+                        <StackPanel Margin="0,0,8,0">
+                            <TextBlock Text="Минимум" FontSize="11" Foreground="{StaticResource UiTextSecondaryBrush}" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding MinValue, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <StackPanel Margin="8,0,0,0">
+                            <TextBlock Text="Максимум" FontSize="11" Foreground="{StaticResource UiTextSecondaryBrush}" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding MaxValue, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </UniformGrid>
+                </StackPanel>
+
+                <!-- Description Box -->
+                <Border Background="{StaticResource UiSurfaceBrush}" BorderBrush="{StaticResource UiBorderBrush}" BorderThickness="1" Padding="12" Margin="0,16,0,0">
+                    <TextBlock Text="{Binding MatrixTypeDescription}" TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource UiTextSecondaryBrush}"/>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- Footer Actions -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,24,0,0">
+            <Button Content="Отмена" Width="100" Background="Transparent" Foreground="{StaticResource UiTextPrimaryBrush}" 
+                    Click="Cancel_Click" Margin="0,0,8,0"/>
+            <Button Content="Создать" Width="120" IsDefault="True" IsEnabled="{Binding CanGenerate}" Click="Generate_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

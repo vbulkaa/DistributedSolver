@@ -1,0 +1,173 @@
+services:
+  coordinator:
+    build:
+      context: .
+      dockerfile: DistributedSolver.Coordinator/Dockerfile
+    container_name: distributed-solver-coordinator
+    ports:
+      - "5000:5000"
+    networks:
+      - distributed-solver-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:5000/api/Coordinator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  worker1:
+    build:
+      context: .
+      dockerfile: DistributedSolver.Worker/Dockerfile
+    container_name: distributed-solver-worker-1
+    ports:
+      - "6001:6001"
+    networks:
+      - distributed-solver-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - WORKER_PORT=6001
+      - COORDINATOR_URL=http://coordinator:5000
+      - HOSTNAME=worker1
+    command: ["dotnet", "DistributedSolver.Worker.dll", "6001"]
+    depends_on:
+      coordinator:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:6001/api/Computation/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  worker2:
+    build:
+      context: .
+      dockerfile: DistributedSolver.Worker/Dockerfile
+    container_name: distributed-solver-worker-2
+    ports:
+      - "6002:6002"
+    networks:
+      - distributed-solver-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - WORKER_PORT=6002
+      - COORDINATOR_URL=http://coordinator:5000
+      - HOSTNAME=worker2
+    command: ["dotnet", "DistributedSolver.Worker.dll", "6002"]
+    depends_on:
+      coordinator:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:6002/api/Computation/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  worker3:
+    build:
+      context: .
+      dockerfile: DistributedSolver.Worker/Dockerfile
+    container_name: distributed-solver-worker-3
+    ports:
+      - "6003:6003"
+    networks:
+      - distributed-solver-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - WORKER_PORT=6003
+      - COORDINATOR_URL=http://coordinator:5000
+      - HOSTNAME=worker3
+    command: ["dotnet", "DistributedSolver.Worker.dll", "6003"]
+    depends_on:
+      coordinator:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:6003/api/Computation/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  worker4:
+    build:
+      context: .
+      dockerfile: DistributedSolver.Worker/Dockerfile
+    container_name: distributed-solver-worker-4
+    ports:
+      - "6004:6004"
+    networks:
+      - distributed-solver-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - WORKER_PORT=6004
+      - COORDINATOR_URL=http://coordinator:5000
+      - HOSTNAME=worker4
+    command: ["dotnet", "DistributedSolver.Worker.dll", "6004"]
+    depends_on:
+      coordinator:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:6004/api/Computation/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  worker5:
+    build:
+      context: .
+      dockerfile: DistributedSolver.Worker/Dockerfile
+    container_name: distributed-solver-worker-5
+    ports:
+      - "6005:6005"
+    networks:
+      - distributed-solver-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - WORKER_PORT=6005
+      - COORDINATOR_URL=http://coordinator:5000
+      - HOSTNAME=worker5
+    command: ["dotnet", "DistributedSolver.Worker.dll", "6005"]
+    depends_on:
+      coordinator:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:6005/api/Computation/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  worker6:
+    build:
+      context: .
+      dockerfile: DistributedSolver.Worker/Dockerfile
+    container_name: distributed-solver-worker-6
+    ports:
+      - "6006:6006"
+    networks:
+      - distributed-solver-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - WORKER_PORT=6006
+      - COORDINATOR_URL=http://coordinator:5000
+      - HOSTNAME=worker6
+    command: ["dotnet", "DistributedSolver.Worker.dll", "6006"]
+    depends_on:
+      coordinator:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:6006/api/Computation/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+networks:
+  distributed-solver-network:
+    driver: bridge
+
